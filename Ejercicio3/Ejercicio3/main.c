@@ -77,6 +77,7 @@ int main(int argc, const char * argv[]) {
     LiberaMemoria(hospital, &no_camas);
     
     free(hospital);
+    free(menu);
     return 0;
 }
 
@@ -260,6 +261,7 @@ void LiberaMemoria(Hospital * hospital, int * tam)
         if(auxC->ocupado == TRUE)
         {
             auxP = auxC->persona;
+            free(auxP->telefono);
             free(auxP->apellidos);
             free(auxP->nombre);
             free(auxP);

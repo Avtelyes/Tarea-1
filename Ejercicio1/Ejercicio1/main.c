@@ -57,9 +57,9 @@ int main(int argc, const char * argv[]) {
     *(menu+2) = ImpresionTripulantes;
     *(menu+3) = ImpresionBarcos;
     
-    int tam = 1, opcion = 0;
+    int tam = 10, opcion = 0;
     
-    Embarcacion * barcos = (Embarcacion *) malloc(1 * sizeof(Embarcacion));
+    Embarcacion * barcos = (Embarcacion *) malloc(10 * sizeof(Embarcacion));
     
     while(opcion != 5)
     {
@@ -72,6 +72,7 @@ int main(int argc, const char * argv[]) {
     
     LiberaMemoria(barcos, &tam);
     free(barcos);
+    free(menu);
     
     return 0;
 }
@@ -83,12 +84,17 @@ void AdicionBarco(Embarcacion * barcosA, int *tam)
     
     bool cupo = FALSE;
     
-    if((fin-1)->nombre == NULL)
+    for(; aux<fin; ++aux)
     {
-        aux = (fin-1);
-        InformacionBarco(aux);
-        cupo = TRUE;
-    } else {
+        if((aux)->nombre == NULL)
+        {
+            InformacionBarco(aux);
+            cupo = TRUE;
+            break;
+        }
+    }
+    
+    if (cupo == FALSE) {
         aux = RedimensionEmbarcacion(barcosA, tam);
         InformacionBarco(aux);
         cupo = TRUE;
@@ -201,17 +207,20 @@ void ImpresionBarcos(Embarcacion * barcosA, int *tam)
     
     for(aux=barcosA; aux<fin; ++aux)
     {
-        tamT = aux->tripulantes_actuales;
-        rest = aux->no_tripulantes - tamT;
-        printf("\nBarco No. %d\n", cont);
-        printf("Nombre del Barco: %s\nPropietario: %s\nTamaño Eslora: %d\nTamaño Manga: %d\nNo. Tripulación Máxima: %d\nPlazas Disponibles: %d\nTripulación:\n\n", aux->nombre, aux->propietario, aux->eslora, aux->manga, aux->no_tripulantes, rest);
-        auxP = aux->tripulantes;
-        finP = (auxP+tamT);
-        for(; auxP<finP; ++auxP)
+        if(aux->propietario != NULL)
         {
-            printf("Nombre: %s\nApellidos: %s\nEdad: %d\nRol: %s\n\n", auxP->nombre, auxP->apellidos, auxP->edad, auxP->rol);
+            tamT = aux->tripulantes_actuales;
+            rest = aux->no_tripulantes - tamT;
+            printf("\nBarco No. %d\n", cont);
+            printf("Nombre del Barco: %s\nPropietario: %s\nTamaño Eslora: %d\nTamaño Manga: %d\nNo. Tripulación Máxima: %d\nPlazas Disponibles: %d\nTripulación:\n\n", aux->nombre, aux->propietario, aux->eslora, aux->manga, aux->no_tripulantes, rest);
+            auxP = aux->tripulantes;
+            finP = (auxP+tamT);
+            for(; auxP<finP; ++auxP)
+            {
+                printf("Nombre: %s\nApellidos: %s\nEdad: %d\nRol: %s\n\n", auxP->nombre, auxP->apellidos, auxP->edad, auxP->rol);
+            }
+            cont++;
         }
-        cont++;
     }
 }
 

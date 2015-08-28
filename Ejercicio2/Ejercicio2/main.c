@@ -387,7 +387,7 @@ void LiberaMemoria(Persona * personasA, Pregunta * preguntasA, int * tamP, int *
             free(auxR->ran18_25);
         }
         
-        free(auxR);
+        free(auxP->rangos_respuestas);
         
         auxF = auxP->frecuencia_respuestas;
         free(auxF->res6);
@@ -395,6 +395,7 @@ void LiberaMemoria(Persona * personasA, Pregunta * preguntasA, int * tamP, int *
         free(auxF->res4);
         free(auxF->res3);
         free(auxF->res2);
+        free(auxF->res1);
         
         free(auxF);
         
