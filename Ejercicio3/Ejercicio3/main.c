@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define N 1
+#define N 5
 
 typedef enum {
     FALSE,
@@ -45,7 +45,7 @@ void AltaPaciente(Hospital *, int *);
 void ListaPacientes(Hospital *, int *);
 void BalanceCamas(Hospital *, int *);
 
-Cama * RedimensionHospital(Hospital *, int *);
+Cama * RedimensionHospital(Cama **, int *);
 
 void LiberaMemoria(Hospital *, int *);
 
@@ -61,7 +61,7 @@ int main(int argc, const char * argv[]) {
     
     int no_camas = 5, opcion = 0;
     
-    Hospital * hospital = (Hospital *) malloc(sizeof(Hospital) + sizeof(Cama) + sizeof(Persona));
+    Hospital * hospital = (Hospital *) malloc(300 * sizeof(Hospital *));
     
     CreacionHospital(hospital, &no_camas);
     
@@ -70,7 +70,7 @@ int main(int argc, const char * argv[]) {
         printf("--- Opciones --- \n1-Agregar Paciente\n2-Información de Cama\n3-Dar de Alta a Paciente\n4-Listar Pacientes\n5-Balance de Camas\n6-Salir\nEscoge tu opción: ");
         scanf("%d", &opcion);
         
-        if(opcion != 5)
+        if(opcion != 6)
             (*(menu+opcion-1))(hospital, &no_camas);
     }
     
@@ -84,7 +84,7 @@ void CreacionHospital(Hospital * hospital, int * tam)
 {
     hospital->nombre = malloc(sizeof(char) * 50);
     strcpy(hospital->nombre, "El pingüino feliz");
-    hospital->camas = (Cama *) malloc(*tam * 3 * sizeof(Cama));
+    hospital->camas = (Cama *) malloc(*tam * 50 * sizeof(Cama));
     hospital->ultimo_id = 0;
     
     int id = hospital->ultimo_id;
@@ -102,7 +102,7 @@ void CreacionHospital(Hospital * hospital, int * tam)
 
 void IncorporarPaciente(Hospital * hospital, int * tam)
 {
-    Persona * aux = malloc(sizeof(Persona));
+    Persona * aux = malloc(sizeof(Persona) * 200);
     Cama * auxC = hospital->camas;
     Cama * finC = (auxC+*tam);
     
@@ -137,7 +137,7 @@ void IncorporarPaciente(Hospital * hospital, int * tam)
     
     if(llenado == FALSE)
     {
-        auxC = RedimensionHospital(hospital, tam);
+        auxC = RedimensionHospital(&(hospital->camas), tam);
         auxC->persona = aux;
         auxC->ocupado = TRUE;
         llenado = TRUE;
@@ -200,7 +200,7 @@ void ListaPacientes(Hospital * hospital, int * tam)
         {
             printf("\n\nNombre y Apellidos: %s %s\n", aux->persona->nombre, aux->persona->apellidos);
             printf("Telefono de contacto: %s\n", aux->persona->telefono);
-            printf("Cama asignada: %d\n", aux->id);
+            printf("Cama asignada: %d\n\n", aux->id);
         }
     }
 }
@@ -221,19 +221,19 @@ void BalanceCamas(Hospital * hospital, int * tam)
     }
     
     printf("\n\nCamas Disponibles: %d\n", disponibles);
-    printf("Camas Ocupadas: %d\n", ocupadas);
+    printf("Camas Ocupadas: %d\n\n", ocupadas);
 }
 
-Cama * RedimensionHospital(Hospital * hospital, int * tam)
+Cama * RedimensionHospital(Cama ** cama, int * tam)
 {
-    Cama * aux = hospital->camas;
     
-    *aux = *(Cama *) realloc(aux, (*tam+5) * 3 * sizeof(Cama *));
+    *(cama) = (Cama *) realloc(*cama, (*tam+5) * 50 * sizeof(Cama));
     
     *tam = *tam+5;
     
-    Cama *aux2 = (hospital->camas + *tam-5);
-    Cama *fin2 = (aux+*tam);
+    Cama *aux2 = ((*cama + *tam-5));
+    Cama *fin2 = ((*cama+*tam));
+    
     int id = (aux2-1)->id;
     
     for(; aux2<fin2; ++aux2)
@@ -243,7 +243,7 @@ Cama * RedimensionHospital(Hospital * hospital, int * tam)
         aux2->ocupado = FALSE;
     }
     
-    Cama * auxR = (aux+*tam-5);
+    Cama * auxR = ((*cama+*tam-5));
     
     return auxR;
 }
